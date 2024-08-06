@@ -231,3 +231,8 @@ class Wrapper:
         """
         X, shap_values = self._process_shap_values(X, shap_values)
         shap.dependence_plot(ind=feature, shap_values=shap_values.values, features=X, show=show)
+
+    def cohorts(self, feature, X, shap_values=None):
+        _, shap_values = self._process_shap_values(X, shap_values)
+        cat = X[feature].astype(str).values
+        shap.plots.bar(shap_values.cohorts(cat).abs.mean(0))
