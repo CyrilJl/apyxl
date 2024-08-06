@@ -1,16 +1,22 @@
-# Analytix
+# <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo_analytix.png" alt="Logo OptiMask" width="40" height="40"> Analytix
 
-`analytix` is a developing package for simple, non-linear, explainable regression. It can be seen as a wrapper around `xgboost` for the regression model, `hyperopt` for optimizing hyperparameters, and `shap` for explainability.
+The `analytix` package is an emerging tool designed to simplify non-linear, explainable regression for beginner and intermediate users. It serves as a wrapper around `xgboost` for the regression model, `hyperopt` for optimizing hyperparameters, and `shap` for model explainability. 
 
-Categorical variables are automatically processed through One-Hot-Encoding. Multiple K-Folds cross-validation is carried out on the training dataset by `hyperopt` to select the best hyperparameters, minimizing RMSE. The number of folds and trials can be managed by the user.
+### Current Features:
+- **Categorical Variables**: Automatically processed using One-Hot-Encoding.
+- **Hyperparameter Optimization**: Conducts multiple K-Folds cross-validation on the training dataset with `hyperopt` to select the best hyperparameters, minimizing RMSE. Users can manage the number of folds and trials.
+- **Explainability**: Supports `beeswarm` and `dependence_plot` visualizations.
+- **Regression Models**: Currently focused solely on regression tasks.
 
-Currently:
+### Upcoming Enhancements:
+1. **Time-Series Normalization**: Automatic handling and normalization of time-series data to streamline model training.
+2. **A/B Test Analysis**: Capabilities to analyze A/B test results, providing users with insights into different experiment groups.
+3. **User-Defined Scoring Functions**: Improved handling for custom scoring functions, giving users more flexibility in model evaluation.
 
-- Only `beeswarm` and `dependence_plot` are available.
-- Only regression is available.
-- The possibility for the user to change the scoring function is not well-handled yet.
+### Design Philosophy:
+`analytix` is crafted to hide the underlying complexity, making it accessible and user-friendly. It aims to provide a seamless experience for users with varying levels of expertise, focusing on simplicity and ease of use.
 
-The package is to be extended. I would like it to be able to handle automatic time-series normalization and A/B test analysis.
+By extending its functionalities, `analytix` aspires to become a comprehensive solution for non-linear regression analysis and explainability, catering to both beginners and intermediate users in data science.
 
 ## Installation
 
