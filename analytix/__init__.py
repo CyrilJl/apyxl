@@ -2,8 +2,7 @@
 
 # author : Cyril Joly
 
-from ._random_forest import (RandomForestClassifierWrapper,
-                             RandomForestRegressorWrapper)
-from ._xgb import XGBClassifier, XGBRegressorWrapper
+from ._random_forest import RandomForestRegressorWrapper
+from ._xgb import XGBRegressorWrapper
 
-__all__ = ['RandomForestRegressorWrapper', 'XGBRegressorWrapper', 'RandomForestClassifierWrapper', 'XGBClassifier']
+__all__ = ['RandomForestRegressorWrapper', 'XGBRegressorWrapper', ]

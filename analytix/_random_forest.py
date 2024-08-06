@@ -3,7 +3,7 @@
 # author : Cyril Joly
 
 from hyperopt import hp
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 from ._wrapper import Wrapper
 
@@ -29,11 +29,3 @@ class RandomForestRegressorWrapper(RandomForestWrapper):
 
     def _get_model(self):
         return RandomForestRegressor()
-
-
-class RandomForestClassifierWrapper(RandomForestWrapper):
-    def __init__(self, scoring='balanced_accuracy', params_space=None, max_evals=15, cv=5, feature_perturbation='interventional', verbose=False):
-        super().__init__(scoring=scoring, params_space=params_space, max_evals=max_evals, cv=cv, feature_perturbation=feature_perturbation, verbose=verbose)
-
-    def _get_model(self):
-        return RandomForestClassifier()

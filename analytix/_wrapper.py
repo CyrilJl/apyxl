@@ -61,7 +61,7 @@ class Wrapper:
         def objective(params):
             regressor = self._get_model().set_params(**params)
             scores = cross_val_score(regressor, X, y, cv=self.cv, scoring=self.scoring)
-            return np.mean(np.sqrt(-scores))
+            return -np.mean(scores)
         return objective
 
     def _preprocess_input(self, X):
@@ -90,7 +90,19 @@ class Wrapper:
             X = X.reindex(columns=self.features)
         return X
 
-    def fit(self, X, y, **params):
+    @staticmethod
+    def _sample(X, y, frac, n):
+        if (frac is None) and (n is None):
+            return X, y
+        index = np.arange(len(X))
+        if (frac is not None) and (0 <= frac <= 1):
+            num_samples = int(len(X) * frac)
+            index = np.random.choice(len(X), size=num_samples, replace=False)
+        elif (1 <= n <= len(X)):
+            index = np.random.choice(len(X), size=n, replace=False)
+        return X.iloc[index], y.iloc[index]
+
+    def fit(self, X, y, frac=None, n=None, **params):
         """
         Fit the model with optional hyperparameters.
 
@@ -103,6 +115,7 @@ class Wrapper:
             self: Returns self for method chaining.
         """
         X = self._preprocess_input(X)
+        X, y = self._sample(X=X, y=y, frac=frac, n=n)
 
         if params:
             self.best_model = self._get_model().set_params(**params)
@@ -117,6 +130,8 @@ class Wrapper:
 
             self.best_model = self._get_model().set_params(**best_params)
             self.best_score = trials.best_trial['result']['loss']
+            self.trials = trials
+            self.best_trial = best
 
         self.best_model.fit(X, y)
         self.explainer = shap.Explainer(self.best_model, feature_perturbation=self.feature_perturbation, feature_names=self.features)
@@ -137,7 +152,7 @@ class Wrapper:
         X = self._preprocess_input(X)
         return pd.Series(self.best_model.predict(X), index=X.index)
 
-    def _get_shap_values(self, X) -> shap.Explanation:
+    def compute_shap_values(self, X) -> shap.Explanation:
         """
         Get SHAP values for a given dataset.
 
@@ -186,7 +201,7 @@ class Wrapper:
         if shap_values is None:
             self._check_fit()
             X = self._preprocess_input(X)
-            shap_values = self._get_shap_values(X)
+            shap_values = self.compute_shap_values(X)
         else:
             self._check_shap_values(shap_values)
         return X, shap_values

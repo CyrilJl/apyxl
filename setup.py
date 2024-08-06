@@ -5,5 +5,12 @@ setup(
     version='0.1',
     author='Cyril Joly',
     description='A Python package for data analysis and model optimization.',
-    packages=find_packages()
+    packages=find_packages(),
+    install_requires=[
+        'numpy',
+        'pandas',
+        'xgboost',
+        'scikit-learn',
+        'shap'
+    ],
 )
