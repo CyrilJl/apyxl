@@ -28,8 +28,13 @@ xgb.fit(X, y)
 # Generate a beeswarm plot
 xgb.beeswarm(X)
 ```
+<img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/beeswarm.png" width="500">
 
-![Beeswarm Plot](https://github.com/CyrilJl/AnalytiX/blob/main/_static/beeswarm.png)
+```python
+# Generate a dependence plot
+xgb.dependence(X, feature='s5')
+```
+<img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/dependence.png" width="500">
 
 ## Features
 
