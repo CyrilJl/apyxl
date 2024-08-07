@@ -1,6 +1,6 @@
 # <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> Analytix
 
-The `analytix` package is a simple wrapper around `xgboost`, `hyperopt`, and `shap`, aimed at making non-linear, explainable regression more accessible for beginner and intermediate users. This project is in its early stages of development and currently offers basic functionality.
+The ``analytix`` package is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/).
 
 ### Current Features:
 - Automatic One-Hot-Encoding for categorical variables
