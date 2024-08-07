@@ -217,9 +217,9 @@ class Wrapper:
             show (bool, optional): Whether to display the plot. Default is True.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        shap.summary_plot(shap_values, max_display=max_display, show=show)
+        shap.plots.beeswarm(shap_values, max_display=max_display, show=show)
 
-    def dependence(self, X, shap_values=None, feature=0, show=True):
+    def scatter(self, X, shap_values=None, feature=0, show=True):
         """
         Create a dependence plot for a specific feature.
 
@@ -229,8 +229,8 @@ class Wrapper:
             feature (int, optional): Index of the feature to create the dependence plot for. Default is 0.
             show (bool, optional): Whether to display the plot. Default is True.
         """
-        X, shap_values = self._process_shap_values(X, shap_values)
-        shap.dependence_plot(ind=feature, shap_values=shap_values.values, features=X, show=show)
+        _, shap_values = self._process_shap_values(X, shap_values)
+        shap.plots.scatter(shap_values=shap_values[:, feature], color=shap_values, show=show)
 
     def cohorts(self, feature, X, shap_values=None):
         _, shap_values = self._process_shap_values(X, shap_values)

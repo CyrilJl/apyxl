@@ -1,34 +1,29 @@
 # <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> Analytix
 
-The `analytix` package is an emerging tool designed to simplify non-linear, explainable regression for beginner and intermediate users. It serves as a wrapper around `xgboost` for the regression model, `hyperopt` for optimizing hyperparameters, and `shap` for model explainability. 
+The `analytix` package is a simple wrapper around `xgboost`, `hyperopt`, and `shap`, aimed at making non-linear, explainable regression more accessible for beginner and intermediate users. This project is in its early stages of development and currently offers basic functionality.
 
 ### Current Features:
-- **Categorical Variables**: Automatically processed using One-Hot-Encoding.
-- **Hyperparameter Optimization**: Conducts multiple K-Folds cross-validation on the training dataset with `hyperopt` to select the best hyperparameters, minimizing RMSE. Users can manage the number of folds and trials.
-- **Explainability**: Supports `beeswarm` and `dependence_plot` visualizations.
-- **Regression Models**: Currently focused solely on regression tasks.
+- Automatic One-Hot-Encoding for categorical variables
+- Basic hyperparameter optimization using `hyperopt` with K-Folds cross-validation
+- Simple explainability visualizations using `shap` (`beeswarm` and `dependence_plot`)
+- Focus on regression tasks only
 
-### Upcoming Enhancements:
-1. **Time-Series Normalization**: Automatic handling and normalization of time-series data to streamline model training.
-2. **A/B Test Analysis**: Capabilities to analyze A/B test results, providing users with insights into different experiment groups.
-3. **User-Defined Scoring Functions**: Improved handling for custom scoring functions, giving users more flexibility in model evaluation.
-
-### Design Philosophy:
-`analytix` is crafted to hide the underlying complexity, making it accessible and user-friendly. It aims to provide a seamless experience for users with varying levels of expertise, focusing on simplicity and ease of use.
-
-By extending its functionalities, `analytix` aspires to become a comprehensive solution for non-linear regression analysis and explainability, catering to both beginners and intermediate users in data science.
+### Planned Enhancements:
+1. Time-series data handling and normalization
+2. A/B test analysis capabilities
+3. Support for user-defined scoring functions
 
 ## Installation
 
-To install the package, use the following command:
+To install the package, use:
 
 ```bash
 pip install analytix
 ```
 
-## Usage
+## Basic Usage
 
-Here is an example of how to use the `XGBRegressorWrapper` class from the `analytix` package. This example demonstrates loading the diabetes dataset, fitting the model, and generating a beeswarm plot.
+Here's a simple example of how to use the `XGBRegressorWrapper` class:
 
 ```python
 from analytix import XGBRegressorWrapper
@@ -49,7 +44,9 @@ xgb.beeswarm(X)
 
 ```python
 # Generate a dependence plot
-xgb.dependence(X, feature='s5')
+xgb.scatter(X, feature='s5')
 ```
 
 <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/dependence.png" width="500">
+
+Please note that this package is still under development, and features may change or expand in future versions.
