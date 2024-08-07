@@ -1,4 +1,4 @@
-# <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo_analytix.png" alt="Logo OptiMask" width="40" height="40"> Analytix
+# <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> Analytix
 
 The `analytix` package is an emerging tool designed to simplify non-linear, explainable regression for beginner and intermediate users. It serves as a wrapper around `xgboost` for the regression model, `hyperopt` for optimizing hyperparameters, and `shap` for model explainability. 
 
