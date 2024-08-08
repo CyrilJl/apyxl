@@ -2,7 +2,7 @@
 
 # author : Cyril Joly
 
-from ._random_forest import RandomForestRegressorWrapper
+from ._misc import MissingInputError, NotFittedError
 from ._xgb import XGBRegressorWrapper
 
-__all__ = ['RandomForestRegressorWrapper', 'XGBRegressorWrapper', ]
+__all__ = ['RandomForestRegressorWrapper', 'XGBRegressorWrapper', 'MissingInputError', 'NotFittedError']
