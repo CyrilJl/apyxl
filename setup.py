@@ -11,6 +11,8 @@ setup(
         'pandas',
         'xgboost',
         'scikit-learn',
-        'shap'
+        'shap',
+        'hyperopt',
+        'matplotlib'
     ],
 )

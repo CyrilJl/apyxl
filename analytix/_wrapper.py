@@ -12,8 +12,7 @@ from sklearn.metrics import make_scorer, matthews_corrcoef, mean_squared_error
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import OneHotEncoder
 
-from ._misc import (FeatureIndexError, FeatureNameError, MissingInputError,
-                    NotFittedError, check_params)
+from ._misc import FeatureIndexError, FeatureNameError, MissingInputError, NotFittedError, check_params
 
 
 class Wrapper:
@@ -25,7 +24,7 @@ class Wrapper:
                                        should return only a single value.
             greater_is_better (bool, optional): Whether a higher score indicates a better model. Default is False.
             max_evals (int, optional): Maximum number of hyperparameter optimization evaluations. Default is 15.
-            cv (int, optional): Number of cross-validation folds. Default is 5.
+            cv (int, optional): Number of cross-validation folds. Default is 5. Can be any sklearn splitter.
             feature_perturbation (str, optional): The method used for feature perturbation in SHAP values calculation.
                                                   Default is 'tree_path_dependent'.
             verbose (bool, optional): Whether to print verbose output. Default is False.
@@ -76,7 +75,7 @@ class Wrapper:
         """
         Private method to be implemented by subclasses to return the model to be optimized.
         """
-        raise ValueError("Must be implemented by subclasses !")
+        raise ValueError("Must be implemented by subclasses!")
 
     def create_objective(self, X, y):
         """
@@ -153,6 +152,8 @@ class Wrapper:
         Args:
             X (pd.DataFrame): The feature matrix.
             y (pd.Series): The target values.
+            frac (float, optional): Fraction of data to use for fitting. Default is None.
+            n (int, optional): Number of samples to use for fitting. Default is None.
             **params: Optional hyperparameters to set for the model.
 
         Returns:
@@ -268,7 +269,8 @@ class Wrapper:
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
             max_display (int, optional): Maximum number of features to display in the beeswarm plot. Default is None.
             order (callable, optional): Function to order the features. Default is shap.Explanation.abs.
-            output:
+            output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
+            title (str, optional): Title for the plot. Default is None.
             show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP beeswarm plot.
         """
@@ -291,7 +293,9 @@ class Wrapper:
         Args:
             X (pd.DataFrame): The feature matrix.
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
-            feature (int, optional): Index of the feature to create the dependence plot for. Default is 0.
+            feature (int or str, optional): Index or name of the feature to create the dependence plot for. Default is 0.
+            output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
+            title (str, optional): Title for the plot. Default is None.
             show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP scatter plot.
         """
@@ -314,6 +318,8 @@ class Wrapper:
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
             max_display (int, optional): Maximum number of features to display in the bar plot. Default is 10.
             order (callable, optional): Function to order the features. Default is shap.Explanation.abs.
+            output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
+            title (str, optional): Title for the plot. Default is None.
             show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP bar plot.
         """
@@ -333,6 +339,9 @@ class Wrapper:
         Args:
             X (pd.DataFrame, optional): The feature matrix. Default is None.
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
+            output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
+            title (str, optional): Title for the plot. Default is None.
+            show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP decision plot.
         """
         X, shap_values = self._process_shap_values(X, shap_values)
@@ -351,6 +360,9 @@ class Wrapper:
         Args:
             X (pd.DataFrame, optional): The feature matrix. Default is None.
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
+            output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
+            title (str, optional): Title for the plot. Default is None.
+            show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP force plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
