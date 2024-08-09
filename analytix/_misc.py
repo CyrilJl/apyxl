@@ -5,13 +5,11 @@ def check_params(param, params=None, types=None):
             accepted = f'{types}'
         else:
             accepted = f"{', '.join([str(t) for t in types])}"
-        # Raise a TypeError with a customized message
         msg = f"`{param}` is not of an accepted type, it can only be of type {accepted}!"
         raise TypeError(msg)
 
     # Check if the parameter is among the recognized parameters
     if (params is not None) and (param not in params):
-        # Raise a ValueError with a customized message
         msg = f"`{param}` is not a recognized argument, it can only be one of {', '.join(sorted(params))}!"
         raise ValueError(msg)
 
@@ -25,3 +23,19 @@ class MissingInputError(Exception):
 
 class NotFittedError(Exception):
     """Exception raised when an operation is attempted on an unfitted model."""
+
+
+class FeatureIndexError(ValueError):
+    """Exception raised when the feature index is out of bounds."""
+
+    def __init__(self, feature, max_index):
+        super().__init__(f"The feature index {feature} is out of bounds. "
+                         f"Valid feature indices are from 0 to {max_index}.")
+
+
+class FeatureNameError(ValueError):
+    """Exception raised when the feature name is not found."""
+
+    def __init__(self, feature, feature_names):
+        super().__init__(f"The feature name '{feature}' does not exist. "
+                         f"Available features are: {', '.join(feature_names)}.")

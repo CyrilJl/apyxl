@@ -2,20 +2,22 @@
 
 # author : Cyril Joly
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
 from hyperopt import Trials, fmin, tpe
 from shap import Explanation
-from sklearn.metrics import make_scorer, mean_squared_error
+from sklearn.metrics import make_scorer, matthews_corrcoef, mean_squared_error
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import OneHotEncoder
 
-from ._misc import MissingInputError, NotFittedError, check_params
+from ._misc import (FeatureIndexError, FeatureNameError, MissingInputError,
+                    NotFittedError, check_params)
 
 
 class Wrapper:
-    def __init__(self, scoring, greater_is_better=False, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', verbose=False):
+    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', verbose=False):
         """
         Args:
             scoring (str or callable): The scoring metric used for evaluation. A string (see model evaluation documentation)
@@ -59,9 +61,12 @@ class Wrapper:
         Returns:
             self: Returns self for method chaining.
         """
-        if scoring is None:
+        if scoring == 'mse':
             self.scoring = make_scorer(score_func=mean_squared_error)
             self.greater_is_better = False
+        elif scoring == 'matthews':
+            self.scoring = make_scorer(score_func=matthews_corrcoef)
+            self.greater_is_better = True
         else:
             self.scoring = scoring
             self.greater_is_better = greater_is_better
@@ -243,7 +248,18 @@ class Wrapper:
             check_params(shap_values, types=shap.Explanation)
         return X, shap_values
 
-    def beeswarm(self, X=None, shap_values=None, max_display=None, order=Explanation.abs.mean(0), show=True, **kwargs):
+    @staticmethod
+    def _check_feature(feature, shap_values):
+        check_params(feature, types=(int, str))
+        if isinstance(feature, int):
+            if feature < 0 or feature >= shap_values.shape[1]:
+                raise FeatureIndexError(feature, shap_values.shape[1] - 1)
+
+        if isinstance(feature, str):
+            if feature not in shap_values.feature_names:
+                raise FeatureNameError(feature, shap_values.feature_names)
+
+    def beeswarm(self, X=None, shap_values=None, max_display=None, order=Explanation.abs.mean(0), output=0, title=None, show=True, **kwargs):
         """
         Create a beeswarm plot of SHAP values.
 
@@ -252,13 +268,23 @@ class Wrapper:
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
             max_display (int, optional): Maximum number of features to display in the beeswarm plot. Default is None.
             order (callable, optional): Function to order the features. Default is shap.Explanation.abs.
+            output:
             show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP beeswarm plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        shap.plots.beeswarm(shap_values=shap_values, order=order, max_display=max_display,  show=show, **kwargs)
+        ndim = len(shap_values.shape)
+        if ndim > 2:
+            shap_values = shap_values[:, :, output]
+        shap.plots.beeswarm(shap_values=shap_values, order=order, max_display=max_display, show=False, **kwargs)
+        if ndim > 2:
+            plt.xlabel(f"SHAP value (impact on model output {output})")
+        if isinstance(title, str):
+            plt.title(title)
+        if show:
+            plt.show()
 
-    def scatter(self, X=None, shap_values=None, feature=0, show=True, **kwargs):
+    def scatter(self, X=None, shap_values=None, feature=0, output=0, title=None, show=True, **kwargs):
         """
         Create a dependence plot for a specific feature.
 
@@ -270,9 +296,16 @@ class Wrapper:
             **kwargs: Additional keyword arguments for the SHAP scatter plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        shap.plots.scatter(shap_values=shap_values[:, feature], color=shap_values, show=show, **kwargs)
+        if len(shap_values.shape) > 2:
+            shap_values = shap_values[:, :, output]
+        self._check_feature(feature=feature, shap_values=shap_values)
+        shap.plots.scatter(shap_values=shap_values[:, feature], color=shap_values, show=False, **kwargs)
+        if isinstance(title, str):
+            plt.title(title)
+        if show:
+            plt.show()
 
-    def bar(self, X=None, shap_values=None, max_display=10, order=Explanation.abs, show=True, **kwargs):
+    def bar(self, X=None, shap_values=None, max_display=10, order=Explanation.abs, output=0, title=None, show=True, **kwargs):
         """
         Create a bar plot of SHAP values.
 
@@ -285,9 +318,15 @@ class Wrapper:
             **kwargs: Additional keyword arguments for the SHAP bar plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        shap.plots.bar(shap_values=shap_values, order=order,  max_display=max_display, show=show, **kwargs)
+        if len(shap_values.shape) > 2:
+            shap_values = shap_values[:, :, output]
+        shap.plots.bar(shap_values=shap_values, order=order,  max_display=max_display, show=False, **kwargs)
+        if isinstance(title, str):
+            plt.title(title)
+        if show:
+            plt.show()
 
-    def decision(self, X=None, shap_values=None, show=True, **kwargs):
+    def decision(self, X=None, shap_values=None, output=0, title=None, show=True, **kwargs):
         """
         Create a decision plot of SHAP values.
 
@@ -297,9 +336,15 @@ class Wrapper:
             **kwargs: Additional keyword arguments for the SHAP decision plot.
         """
         X, shap_values = self._process_shap_values(X, shap_values)
-        shap.plots.decision(base_value=self.explainer.expected_value, shap_values=shap_values.values, features=X, **kwargs)
+        if len(shap_values.shape) > 2:
+            shap_values = shap_values[:, :, output]
+        shap.plots.decision(base_value=self.explainer.expected_value, shap_values=shap_values.values, features=X, show=False, **kwargs)
+        if isinstance(title, str):
+            plt.title(title)
+        if show:
+            plt.show()
 
-    def force(self, X=None, shap_values=None, show=True, **kwargs):
+    def force(self, X=None, shap_values=None, output=0, title=None, show=True, **kwargs):
         """
         Create a force plot of SHAP values.
 
@@ -309,4 +354,10 @@ class Wrapper:
             **kwargs: Additional keyword arguments for the SHAP force plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        shap.plots.force(base_value=shap_values, features=X, matplotlib=True, show=show, **kwargs)
+        if len(shap_values.shape) > 2:
+            shap_values = shap_values[:, :, output]
+        shap.plots.force(base_value=shap_values, features=X, matplotlib=True, show=False, **kwargs)
+        if isinstance(title, str):
+            plt.title(title)
+        if show:
+            plt.show()

@@ -3,6 +3,6 @@
 # author : Cyril Joly
 
 from ._misc import MissingInputError, NotFittedError
-from ._xgb import XGBRegressorWrapper
+from ._xgb import XGBClassifierWrapper, XGBRegressorWrapper
 
-__all__ = ['RandomForestRegressorWrapper', 'XGBRegressorWrapper', 'MissingInputError', 'NotFittedError']
+__all__ = ['XGBClassifierWrapper', 'XGBRegressorWrapper', 'MissingInputError', 'NotFittedError']

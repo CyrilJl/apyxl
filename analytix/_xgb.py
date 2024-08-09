@@ -3,7 +3,7 @@
 # author : Cyril Joly
 
 from hyperopt import hp
-from xgboost import XGBRegressor
+from xgboost import XGBClassifier, XGBRegressor
 
 from ._wrapper import Wrapper
 
@@ -30,8 +30,16 @@ class XGBWrapper(Wrapper):
 
 
 class XGBRegressorWrapper(XGBWrapper):
-    def __init__(self, scoring=None, greater_is_better=False, params_space=None, max_evals=15, cv=5, feature_perturbation='interventional', verbose=False):
+    def __init__(self, scoring='r2', greater_is_better=True, params_space=None, max_evals=15, cv=5, feature_perturbation='interventional', verbose=False):
         super().__init__(scoring=scoring, greater_is_better=greater_is_better, params_space=params_space, max_evals=max_evals, cv=cv, feature_perturbation=feature_perturbation, verbose=verbose)
 
     def _get_model(self):
         return XGBRegressor()
+
+
+class XGBClassifierWrapper(XGBWrapper):
+    def __init__(self, scoring='matthews', greater_is_better=True, params_space=None, max_evals=15, cv=5, feature_perturbation='interventional', verbose=False):
+        super().__init__(scoring=scoring, greater_is_better=greater_is_better, params_space=params_space, max_evals=max_evals, cv=cv, feature_perturbation=feature_perturbation, verbose=verbose)
+
+    def _get_model(self):
+        return XGBClassifier()
