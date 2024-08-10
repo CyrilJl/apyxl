@@ -215,7 +215,7 @@ class Wrapper:
             shap.Explanation: SHAP values explanation.
         """
         self._check_fit()
-        return self.explainer(X)
+        return self.explainer(self._preprocess_input(X))
 
     def _check_fit(self):
         """
@@ -243,7 +243,6 @@ class Wrapper:
         if shap_values is None:
             check_params(X, types=pd.DataFrame)
             self._check_fit()
-            X = self._preprocess_input(X)
             shap_values = self.compute_shap_values(X)
         else:
             check_params(shap_values, types=shap.Explanation)
