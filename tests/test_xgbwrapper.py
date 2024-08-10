@@ -4,7 +4,7 @@ import pytest
 import shap
 from sklearn.datasets import load_diabetes
 
-from alpyx import MissingInputError, NotFittedError, XGBRegressorWrapper
+from apyxl import MissingInputError, NotFittedError, XGBRegressorWrapper
 
 
 @pytest.fixture

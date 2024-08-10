@@ -4,10 +4,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='alpyx',
+    name='apyxl',
     version='0.1',
     author='Cyril Joly',
     description='A Python package for data analysis and model optimization.',
+    url='https://github.com/CyrilJl/apyxl',
     long_description_content_type='text/markdown',
     long_description=long_description,
     packages=find_packages(),
