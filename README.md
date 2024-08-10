@@ -1,6 +1,6 @@
 # <img src="https://github.com/CyrilJl/apyxl/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> apyxl
 
-The ``apyxl`` package (Another PYthon package for eXplainabile Learning) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs.
+The ``apyxl`` package (Another PYthon package for eXplainable Learning) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs.
 
 ### Current Features:
 - Automatic One-Hot-Encoding for categorical variables
