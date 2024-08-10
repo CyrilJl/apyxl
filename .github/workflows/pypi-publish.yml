@@ -24,6 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools wheel twine numpy pandas xgboost shap matplotlib scikit-learn hyperopt pytest
 
+      - name: Install package
+        run: |
+          pip install .
+
       - name: Run tests
         run: |
           pytest tests
