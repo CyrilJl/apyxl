@@ -1,10 +1,10 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import pytest
 import shap
 from sklearn.datasets import load_diabetes
-import matplotlib.pyplot as plt
 
-from analytix import MissingInputError, NotFittedError, XGBRegressorWrapper
+from alpyx import MissingInputError, NotFittedError, XGBRegressorWrapper
 
 
 @pytest.fixture

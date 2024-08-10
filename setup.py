@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='analytix',
+    name='alpyx',
     version='0.1',
     author='Cyril Joly',
     description='A Python package for data analysis and model optimization.',
