@@ -1,11 +1,11 @@
-# <img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> Analytix
+# <img src="https://github.com/CyrilJl/alpyx/blob/main/_static/logo.svg" alt="Logo OptiMask" width="40" height="40"> alpyx
 
-The ``analytix`` package is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/).
+The ``alpyx`` package (Another Learning PYthon package for eXplainability) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs.
 
 ### Current Features:
 - Automatic One-Hot-Encoding for categorical variables
 - Basic hyperparameter optimization using `hyperopt` with K-Folds cross-validation
-- Simple explainability visualizations using `shap` (`beeswarm` and `dependence_plot`)
+- Simple explainability visualizations using `shap` (`beeswarm`, `decision`, `force`, `scatter`)
 - Focus on regression tasks only
 
 ### Planned Enhancements:
@@ -14,19 +14,15 @@ The ``analytix`` package is a simple wrapper around [`xgboost`](https://xgboost.
 3. Support for user-defined scoring functions
 
 ## Installation
-
 To install the package, use:
-
 ```bash
-pip install analytix
+pip install alpyx
 ```
 
 ## Basic Usage
-
 Here's a simple example of how to use the `XGBRegressorWrapper` class:
-
 ```python
-from analytix import XGBRegressorWrapper
+from alpyx import XGBRegressorWrapper
 from sklearn.datasets import load_diabetes
 
 # Load the diabetes dataset
@@ -39,14 +35,12 @@ xgb.fit(X, y)
 # Generate a beeswarm plot
 xgb.beeswarm(X)
 ```
-
-<img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/beeswarm.png" width="500">
+<img src="https://github.com/CyrilJl/alpyx/blob/main/_static/beeswarm.png" width="500">
 
 ```python
 # Generate a dependence plot
 xgb.scatter(X, feature='s5')
 ```
-
-<img src="https://github.com/CyrilJl/AnalytiX/blob/main/_static/dependence.png" width="500">
+<img src="https://github.com/CyrilJl/alpyx/blob/main/_static/dependence.png" width="500">
 
 Please note that this package is still under development, and features may change or expand in future versions.
