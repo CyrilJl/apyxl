@@ -4,7 +4,7 @@ The `apyxl` package (Another PYthon package for eXplainable Learning) is a simpl
 
 ### Current Features:
 - Automatic One-Hot-Encoding for categorical variables
-- Basic hyperparameter optimization using `hyperopt` with K-Folds cross-validation
+- Bayesian hyperparameter optimization using `hyperopt`
 - Simple explainability visualizations using `shap` (`beeswarm`, `decision`, `force`, `scatter`)
 - Focus on classification and regression tasks
 
