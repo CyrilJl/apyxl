@@ -16,7 +16,7 @@ from ._misc import FeatureIndexError, FeatureNameError, MissingInputError, NotFi
 
 
 class Wrapper:
-    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', verbose=False):
+    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', verbose=False, random_state=None):
         """
         Args:
             scoring (str or callable): The scoring metric used for evaluation. A string (see model evaluation documentation)
@@ -42,6 +42,7 @@ class Wrapper:
         self.cv = cv
         self.feature_perturbation = feature_perturbation
         self.verbose = bool(verbose)
+        self.rng = np.random.default_rng(seed=random_state)
 
         self.best_model = None
         self.best_params = None
@@ -172,7 +173,7 @@ class Wrapper:
         else:
             trials = Trials()
             best = fmin(self.create_objective(X.copy(), y.copy()), self.params_space, algo=tpe.suggest,
-                        max_evals=self.max_evals, trials=trials, verbose=self.verbose)
+                        max_evals=self.max_evals, trials=trials, verbose=self.verbose, rstate=self.rng)
 
             best_params = {key: best[key] for key in self.params_space.keys()}
             self.best_params = best_params
@@ -299,10 +300,13 @@ class Wrapper:
             **kwargs: Additional keyword arguments for the SHAP scatter plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
-        if len(shap_values.shape) > 2:
+        ndim = len(shap_values.shape)
+        if ndim > 2:
             shap_values = shap_values[:, :, output]
         self._check_feature(feature=feature, shap_values=shap_values)
         shap.plots.scatter(shap_values=shap_values[:, feature], color=shap_values, show=False, **kwargs)
+        if ndim > 2:
+            plt.ylabel(f"SHAP value (impact on model output {output})")
         if isinstance(title, str):
             plt.title(title)
         if show:
