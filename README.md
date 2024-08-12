@@ -175,7 +175,7 @@ df['time_numeric'] = ((df.index-df.index.min())/pd.Timedelta(days=1)).astype(int
 df.sample(5)
 
 >>>                     id     value  time_numeric
-time                                          
+>>> time                                          
 >>> 2024-12-24 05:00:00  a  1.944142           358
 >>> 2024-09-01 11:00:00  a -0.528874           244
 >>> 2024-10-26 22:00:00  b  7.377142           299
