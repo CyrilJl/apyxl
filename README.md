@@ -89,6 +89,121 @@ model.scatter(shap_values=shap_values, feature='Elevation', output=4)
 
 <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/d.png" width="500">
 
+
+### Time Series Normalization - A/B tests
+#### Time Series Normalization
+Weather normalization for time series is a trend discovery analysis that has long been used in weather-dependent applications (such as energy consumption or  [air pollution](https://github.com/skgrange/normalweatherr)). My research suggests that it is equivalent to a SHAP analysis, treating time as a simple numeric variable. Tree-based methods like gradient boosting are particularly well-suited for discovering breakpoint changes, as they recursively split the dataset along one variable and one threshold.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from apyxl import XGBRegressorWrapper
+
+n = 8760
+time = pd.date_range(start='2024-01-01', freq='h', periods=n)
+
+# Generate two correlated time series, `a` and `b`
+cov = [[1, 0.7], [0.7, 1]]
+mean = [0, 5]
+
+df = np.random.multivariate_normal(cov=cov, mean=mean, size=n)
+df[:, 1] *= 2
+
+# Shift time serie `b` on a continuous subset of the period
+df[6000:7000, 1] += 2
+
+df = pd.DataFrame(df, columns=['a', 'b'], index=time)
+
+df.plot(lw=0.7)
+plt.show()
+```
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/e.png" width="500">
+
+```python
+# process time index as a simple numeric variable, i.e. the number of
+# days since the beginning of the dataset (could have been another time unit)
+df['time_numeric'] = ((df.index-df.index.min())/pd.Timedelta(days=1)).astype(int)
+
+# `apyxl` can be then used as:
+target = 'b'
+X, y = df.drop(columns=target), df[target]
+model = XGBRegressorWrapper(random_state=0).fit(X, y)
+model.scatter(X, feature='a')
+model.scatter(X, feature='time_numeric')
+```
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/f.png" width="500">
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/g.png" width="500">
+
+The fitted XGBoost regressor manages to capture the linear relationship between `a` and `b` (with the exception of extreme values) as well as the temporary, time-localized shift between the two time series. This trend, in other words the behavior of `b` that can't be explained by `a`, can be isolated:
+
+```python
+shap_values = model.compute_shap_values(X)
+pd.Series(shap_values[:, 'time_numeric'].values, index=X.index).plot(title='time series `b` normalized by `a`')
+plt.show()
+```
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/h.png" width="500">
+
+#### A/B tests
+Let's now look at our dataset in a different way:
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from apyxl import XGBRegressorWrapper
+
+n = 8760
+time = pd.date_range(start='2024-01-01', freq='h', periods=n)
+
+# Generate two correlated time series, `a` and `b`
+cov = [[1, 0.7], [0.7, 1]]
+mean = [0, 5]
+
+df = np.random.multivariate_normal(cov=cov, mean=mean, size=n)
+df[:, 1] *= 2
+
+# Shift time serie `b` on a continuous subset of the period
+df[6000:7000, 1] += 2
+
+df = pd.DataFrame(df, columns=['a', 'b'], index=time).rename_axis(index='time', columns='id')
+df = df.stack().rename('value').reset_index().set_index('time')
+df['time_numeric'] = ((df.index-df.index.min())/pd.Timedelta(days=1)).astype(int)
+df.sample(5)
+
+>>>                     id     value  time_numeric
+time                                          
+>>> 2024-12-24 05:00:00  a  1.944142           358
+>>> 2024-09-01 11:00:00  a -0.528874           244
+>>> 2024-10-26 22:00:00  b  7.377142           299
+>>> 2024-04-17 03:00:00  a  0.744991           107
+>>> 2024-12-15 11:00:00  b  8.370796           349
+```
+
+We are now dealing with less structured data, with a value of interest and two different ids. Does the behavior of `value` change over time differently according to the ids?
+
+```python
+target = 'value'
+X, y = df.drop(columns=target), df[target]
+model = XGBRegressorWrapper(max_evals=25).fit(X, y)
+model.beeswarm(X)
+```
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/i.png" width="500">
+
+```python
+model.scatter(X, feature='time_numeric')
+```
+
+<img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/j.png" width="500">
+
+The SHAP analysis is clearly able to isolate relative changes of correlated time series over time.
+
+The approach showcased in this package, which utilizes tree-based models like XGBoost for time series normalization and A/B testing, shares conceptual similarities with certain econometric techniques. For instance, methods such as difference-in-differences (DiD) and fixed effects models are traditionally employed to isolate the impact of a treatment or an event over time, controlling for confounding factors. These econometric techniques also aim to discern underlying trends by accounting for both time-variant and invariant factors. The package's application of SHAP values for interpreting model outputs offers a novel way to quantify the impact of variables, much like how econometric models quantify the effects of covariates. A future comparison between this machine learning-based approach and traditional econometric methods could reveal interesting insights, particularly in the context of non-linear relationships and the ability to capture complex interactions in time series data.
+
 ## Note
 
 Please note that this package is still under development, and features may change or expand in future versions.

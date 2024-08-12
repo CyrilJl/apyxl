@@ -25,6 +25,14 @@ class NotFittedError(Exception):
     """Exception raised when an operation is attempted on an unfitted model."""
 
 
+class ModelNotImplementedError(NotImplementedError):
+    """Exception raised when a subclass doesn't implement the _get_model method."""
+
+    def __init__(self, class_name):
+        self.message = f"The _get_model() method must be implemented by {class_name}!"
+        super().__init__(self.message)
+
+
 class FeatureIndexError(ValueError):
     """Exception raised when the feature index is out of bounds."""
 

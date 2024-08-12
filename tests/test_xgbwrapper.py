@@ -13,8 +13,7 @@ def diabetes_data():
     return X, y
 
 
-def test_xgb_wrapper_init(diabetes_data):
-    X, y = diabetes_data
+def test_xgb_wrapper_init():
     xgb = XGBRegressorWrapper()
     assert xgb.best_model is None
     assert xgb.best_params is None

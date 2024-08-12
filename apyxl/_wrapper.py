@@ -12,11 +12,12 @@ from sklearn.metrics import make_scorer, matthews_corrcoef, mean_squared_error
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import OneHotEncoder
 
-from ._misc import FeatureIndexError, FeatureNameError, MissingInputError, NotFittedError, check_params
+from ._misc import (FeatureIndexError, FeatureNameError, MissingInputError,
+                    ModelNotImplementedError, NotFittedError, check_params)
 
 
 class Wrapper:
-    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', verbose=False, random_state=None):
+    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', device='cpu', verbose=False, random_state=None):
         """
         Args:
             scoring (str or callable): The scoring metric used for evaluation. A string (see model evaluation documentation)
@@ -40,7 +41,8 @@ class Wrapper:
         self.set_scoring(scoring=scoring, greater_is_better=greater_is_better)
         self.max_evals = check_params(max_evals, types=int)
         self.cv = cv
-        self.feature_perturbation = feature_perturbation
+        self.feature_perturbation = check_params(feature_perturbation, params=('interventional', 'tree_path_dependent'))
+        self.device = check_params(device, params=('cpu', 'cuda', 'gpu'))
         self.verbose = bool(verbose)
         self.rng = np.random.default_rng(seed=random_state)
 
@@ -76,7 +78,7 @@ class Wrapper:
         """
         Private method to be implemented by subclasses to return the model to be optimized.
         """
-        raise ValueError("Must be implemented by subclasses!")
+        raise ModelNotImplementedError(self.__class__.__name__)
 
     def create_objective(self, X, y):
         """
@@ -112,7 +114,7 @@ class Wrapper:
         if object_columns:
             encoder = OneHotEncoder(sparse_output=False)
             encoded_columns = pd.DataFrame(encoder.fit_transform(X[object_columns].values), index=X.index)
-            encoded_columns.columns = encoder.get_feature_names_out().ravel()
+            encoded_columns.columns = encoder.get_feature_names_out(input_features=object_columns).ravel()
             X = pd.concat([X.drop(columns=object_columns), encoded_columns], axis=1)
 
         if self.features is None:
@@ -165,14 +167,14 @@ class Wrapper:
 
         self.target_feature = y.name
         X = self._preprocess_input(X)
-        X, y = self._sample(X=X, y=y, frac=frac, n=n)
+        Xs, ys = self._sample(X=X, y=y, frac=frac, n=n)
 
         if params:
             self.best_model = self._get_model().set_params(**params)
             self.best_params = params
         else:
             trials = Trials()
-            best = fmin(self.create_objective(X.copy(), y.copy()), self.params_space, algo=tpe.suggest,
+            best = fmin(self.create_objective(Xs.copy(), ys.copy()), self.params_space, algo=tpe.suggest,
                         max_evals=self.max_evals, trials=trials, verbose=self.verbose, rstate=self.rng)
 
             best_params = {key: best[key] for key in self.params_space.keys()}
@@ -187,8 +189,12 @@ class Wrapper:
             self.best_trial = best
 
         self.best_model.fit(X, y)
-        self.explainer = shap.TreeExplainer(model=self.best_model, data=X, feature_perturbation=self.feature_perturbation,
-                                            feature_names=self.features)
+        if self.feature_perturbation == 'tree_path_dependent':
+            self.explainer = shap.TreeExplainer(model=self.best_model, feature_perturbation=self.feature_perturbation,
+                                                feature_names=self.features)
+        if self.feature_perturbation == 'interventional':
+            self.explainer = shap.TreeExplainer(model=self.best_model, data=X, feature_perturbation=self.feature_perturbation,
+                                                feature_names=self.features)
         return self
 
     def predict(self, X) -> pd.Series:
