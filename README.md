@@ -24,7 +24,7 @@ pip install apyxl
 
 ## Basic Usage
 
-### Regression
+### 1. Regression
 
 ```python
 from apyxl import XGBRegressorWrapper
@@ -50,7 +50,7 @@ model.scatter(X=X.sample(2_500), feature='Latitude')
 
 <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/b.png" width="500">
 
-### Classification
+### 2. Classification
 
 ```python
 from apyxl import XGBClassifierWrapper
@@ -90,8 +90,8 @@ model.scatter(shap_values=shap_values, feature='Elevation', output=4)
 <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/d.png" width="500">
 
 
-### Time Series Normalization - A/B tests
-#### Time Series Normalization
+### 3. Time Series Normalization - A/B tests
+#### 3.1. Time Series Normalization
 Weather normalization for time series is a trend discovery analysis that has long been used in weather-dependent applications (such as energy consumption or  [air pollution](https://github.com/skgrange/normalweatherr)). My research suggests that it is equivalent to a SHAP analysis, treating time as a simple numeric variable. Tree-based methods like gradient boosting are particularly well-suited for discovering breakpoint changes, as they recursively split the dataset along one variable and one threshold.
 
 ```python
@@ -148,7 +148,7 @@ plt.show()
 
 <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/h.png" width="500">
 
-#### A/B tests
+#### 3.2. A/B tests
 Let's now look at our dataset in a different way:
 ```python
 import matplotlib.pyplot as plt
