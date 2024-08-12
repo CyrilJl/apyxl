@@ -124,7 +124,7 @@ plt.show()
 ```python
 # process time index as a simple numeric variable, i.e. the number of
 # days since the beginning of the dataset (could have been another time unit)
-df['time_numeric'] = ((df.index-df.index.min())/pd.Timedelta(days=1)).astype(int)
+df['time_numeric'] = ((df.index - df.index.min())/pd.Timedelta(days=1)).astype(int)
 
 # `apyxl` can be then used as:
 target = 'b'
