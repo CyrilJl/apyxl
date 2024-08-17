@@ -11,7 +11,7 @@ The `apyxl` package (Another PYthon package for eXplainable Learning) is a simpl
 
 ## Planned Enhancements
 
-- Time-series data handling and normalization
+- Time-series normalization
 - A/B test analysis capabilities
 
 ## Installation
