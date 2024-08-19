@@ -202,7 +202,13 @@ model.scatter(X, feature='time_numeric')
 
 The SHAP analysis is clearly able to isolate relative changes of correlated time series over time.
 
-The approach showcased in this package, which utilizes tree-based models like XGBoost for time series normalization and A/B testing, shares conceptual similarities with certain econometric techniques. For instance, methods such as difference-in-differences (DiD) and fixed effects models are traditionally employed to isolate the impact of a treatment or an event over time, controlling for confounding factors. These econometric techniques also aim to discern underlying trends by accounting for both time-variant and invariant factors. The package's application of SHAP values for interpreting model outputs offers a novel way to quantify the impact of variables, much like how econometric models quantify the effects of covariates. A future comparison between this machine learning-based approach and traditional econometric methods could reveal interesting insights, particularly in the context of non-linear relationships and the ability to capture complex interactions in time series data.
+The package's approach, using tree-based models like XGBoost for time series normalization and A/B testing, shares similarities with econometric techniques such as [difference-in-differences](https://en.wikipedia.org/wiki/Difference_in_differences) (DiD) and fixed effects models. These methods aim to isolate the impact of treatments or events over time while controlling for confounding factors.
+
+A key difference lies in the specification of events. In DiD, users must explicitly define event timing through dummy variables. In contrast, the package's method can automatically discover relevant time periods without relying on prior user inputs, offering a more flexible approach.
+
+The use of SHAP values for interpreting model outputs provides a novel way to quantify variable impacts, analogous to how econometric models quantify covariate effects. This machine learning-based approach differs from traditional econometrics by uncovering hidden events and interactions without explicit user-defined structures.
+
+A future comparison between this approach and traditional econometric methods could yield valuable insights, particularly regarding non-linear relationships and the capture of complex interactions in time series data.
 
 ## Note
 
