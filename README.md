@@ -204,9 +204,7 @@ The SHAP analysis is clearly able to isolate relative changes of correlated time
 
 The package's approach, using tree-based models like XGBoost for time series normalization and A/B testing, shares similarities with econometric techniques such as [difference-in-differences](https://en.wikipedia.org/wiki/Difference_in_differences) (DiD) and fixed effects models. These methods aim to isolate the impact of treatments or events over time while controlling for confounding factors.
 
-A key difference lies in the specification of events. In DiD, users must explicitly define event timing through dummy variables. In contrast, the package's method can automatically discover relevant time periods without relying on prior user inputs, offering a more flexible approach.
-
-The use of SHAP values for interpreting model outputs provides a novel way to quantify variable impacts, analogous to how econometric models quantify covariate effects. This machine learning-based approach differs from traditional econometrics by uncovering hidden events and interactions without explicit user-defined structures.
+A key difference lies in the specification of events and variable impacts. In DiD, users must explicitly define event timing through dummy variables and quantify covariate effects through traditional econometric models. In contrast, this package's method can automatically discover relevant time periods without relying on prior user inputs and uses SHAP values to quantify variable impacts. This machine learning-based approach offers more flexibility by uncovering hidden events and interactions without explicit user-defined structures, while still providing interpretable results analogous to econometric models.
 
 A future comparison between this approach and traditional econometric methods could yield valuable insights, particularly regarding non-linear relationships and the capture of complex interactions in time series data.
 
