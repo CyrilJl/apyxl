@@ -13,7 +13,7 @@ The `apyxl` package (Another PYthon package for eXplainable Learning) is a simpl
 
 - Time-series normalization
 - A/B test analysis capabilities
-- Comparison of the two latest with econometrics techniques, like difference-in-differences
+- Formalizing the links between the two latest concepts, and comparison with econometrics techniques, like [difference-in-differences](https://en.wikipedia.org/wiki/Difference_in_differences)
 
 ## Installation
 
