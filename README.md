@@ -9,10 +9,11 @@ The `apyxl` package (Another PYthon package for eXplainable Learning) is a simpl
 - Simple explainability visualizations using `shap` (`beeswarm`, `decision`, `force`, `scatter`)
 - Focus on classification and regression tasks
 
-## Planned Enhancements
+ ## Planned Enhancements
 
 - Time-series normalization
 - A/B test analysis capabilities
+- Comparison of the two latest with econometrics techniques, like difference-in-differences
 
 ## Installation
 
