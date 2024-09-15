@@ -63,6 +63,7 @@ def test_xgb_wrapper_scatter(diabetes_data):
     xgb = XGBRegressorWrapper()
     xgb.fit(X, y)
     xgb.scatter(X, feature='s5', show=False)
+    xgb.scatter(X, feature='s5', interaction_feature='sex', show=False)
 
 
 def test_xgb_wrapper_bar(diabetes_data):
