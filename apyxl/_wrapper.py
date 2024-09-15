@@ -12,12 +12,12 @@ from sklearn.metrics import make_scorer, matthews_corrcoef, mean_squared_error
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import OneHotEncoder
 
-from ._misc import (FeatureIndexError, FeatureNameError, MissingInputError,
-                    ModelNotImplementedError, NotFittedError, check_params)
+from ._misc import FeatureIndexError, FeatureNameError, MissingInputError, ModelNotImplementedError, NotFittedError, check_params
 
 
 class Wrapper:
-    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', device='cpu', verbose=False, random_state=None):
+    def __init__(self, scoring, greater_is_better=True, max_evals=15, cv=5, feature_perturbation='tree_path_dependent',
+                 device='cpu', verbose=False, random_state=None):
         """
         Args:
             scoring (str or callable): The scoring metric used for evaluation. A string (see model evaluation documentation)
@@ -50,7 +50,7 @@ class Wrapper:
         self.best_params = None
         self.features = None
         self.best_score = None
-        self.target_feature = None
+        self.target_name = None
 
     def set_scoring(self, scoring, greater_is_better=False):
         """
@@ -110,6 +110,9 @@ class Wrapper:
         Returns:
             pd.DataFrame: The preprocessed feature matrix.
         """
+        bool_columns = X.select_dtypes(include='bool').columns
+        X[bool_columns] = X[bool_columns].astype(int)
+
         object_columns = X.select_dtypes(include='object').columns.tolist()
         if object_columns:
             encoder = OneHotEncoder(sparse_output=False)
@@ -148,24 +151,36 @@ class Wrapper:
             index = np.random.choice(len(X), size=n, replace=False)
         return X.iloc[index], y.iloc[index]
 
-    def fit(self, X: pd.DataFrame, y: pd.Series, frac=None, n=None, **params):
+    def fit(self, X: pd.DataFrame, y=None, target=None, frac=None, n=None, **params):
         """
         Fit the model with optional hyperparameters.
 
         Args:
             X (pd.DataFrame): The feature matrix.
-            y (pd.Series): The target values.
+            y (pd.Series): The target values. If not provided, the target column should be specified in 'target'.
+            target (str, optional): The name of the target column in X. Required if 'y' is not provided.
             frac (float, optional): Fraction of data to use for fitting. Default is None.
             n (int, optional): Number of samples to use for fitting. Default is None.
             **params: Optional hyperparameters to set for the model.
 
         Returns:
             self: Returns self for method chaining.
+
+        Raises:
+            AssertionError: If neither 'y' nor 'target' is provided. 
+                            If 'y' is None and 'target' is not found in X's columns.
         """
         check_params(X, types=pd.DataFrame)
-        check_params(y, types=pd.Series)
+        check_params(y, types=(pd.Series, type(None)))
+        check_params(target, types=(str, type(None)))
 
-        self.target_feature = y.name
+        assert (y is not None) or (target is not None), "'y' or 'target' must be provided."
+
+        if y is None:
+            assert target in X.columns, f"Target '{target}' must be a column in X."
+            X, y = X.drop(columns=target), X[target]
+
+        self.target_name = y.name
         X = self._preprocess_input(X)
         Xs, ys = self._sample(X=X, y=y, frac=frac, n=n)
 
@@ -209,7 +224,7 @@ class Wrapper:
         """
         self._check_fit()
         X = self._preprocess_input(X)
-        return pd.Series(self.best_model.predict(X), index=X.index, name=self.target_feature)
+        return pd.Series(self.best_model.predict(X), index=X.index, name=self.target_name)
 
     def compute_shap_values(self, X) -> shap.Explanation:
         """
@@ -292,7 +307,7 @@ class Wrapper:
         if show:
             plt.show()
 
-    def scatter(self, X=None, shap_values=None, feature=0, output=0, title=None, show=True, **kwargs):
+    def scatter(self, X=None, shap_values=None, feature=0, interaction_feature='auto', output=0, title=None, show=True, **kwargs):
         """
         Create a dependence plot for a specific feature.
 
@@ -300,17 +315,30 @@ class Wrapper:
             X (pd.DataFrame): The feature matrix.
             shap_values (shap.Explanation, optional): Precomputed SHAP values explanation. Default is None.
             feature (int or str, optional): Index or name of the feature to create the dependence plot for. Default is 0.
+            interaction_feature (int, str, or 'auto', optional): The feature to color the plot by. If 'auto', the method will automatically
+                select a feature to color the plot based on interactions with the chosen 'feature'. If an integer or string is provided, 
+                it specifies the index or name of the interaction feature. Default is 'auto'.
             output (int, optional): The output class for which to plot SHAP values (useful for multiclass classification). Default is 0.
             title (str, optional): Title for the plot. Default is None.
             show (bool, optional): Whether to display the plot. Default is True.
             **kwargs: Additional keyword arguments for the SHAP scatter plot.
+
+        Notes:
+            - If `interaction_feature='auto'`, the plot will automatically determine the interaction feature to use for coloring.
+            - If `interaction_feature` is specified (as an index or name), that feature will be used for coloring the scatter plot.
         """
         _, shap_values = self._process_shap_values(X, shap_values)
         ndim = len(shap_values.shape)
         if ndim > 2:
             shap_values = shap_values[:, :, output]
         self._check_feature(feature=feature, shap_values=shap_values)
-        shap.plots.scatter(shap_values=shap_values[:, feature], color=shap_values, show=False, **kwargs)
+        if interaction_feature == 'auto':
+            color = shap_values
+        else:
+            color = shap_values[:, interaction_feature]
+
+        shap.plots.scatter(shap_values=shap_values[:, feature], color=color, show=False, **kwargs)
+
         if ndim > 2:
             plt.ylabel(f"SHAP value (impact on model output {output})")
         if isinstance(title, str):

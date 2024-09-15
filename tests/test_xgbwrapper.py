@@ -19,7 +19,7 @@ def test_xgb_wrapper_init():
     assert xgb.best_params is None
     assert xgb.features is None
     assert xgb.best_score is None
-    assert xgb.target_feature is None
+    assert xgb.target_name is None
 
 
 def test_xgb_wrapper_fit(diabetes_data):
@@ -30,7 +30,7 @@ def test_xgb_wrapper_fit(diabetes_data):
     assert xgb.best_params is not None
     assert xgb.features is not None
     assert xgb.best_score is not None
-    assert xgb.target_feature is not None
+    assert xgb.target_name is not None
 
 
 def test_xgb_wrapper_predict(diabetes_data):
@@ -39,7 +39,7 @@ def test_xgb_wrapper_predict(diabetes_data):
     xgb.fit(X, y)
     y_pred = xgb.predict(X)
     assert isinstance(y_pred, pd.Series)
-    assert y_pred.name == xgb.target_feature
+    assert y_pred.name == xgb.target_name
 
 
 def test_xgb_wrapper_compute_shap_values(diabetes_data):
