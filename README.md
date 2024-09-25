@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/apyxl.svg)](https://badge.fury.io/py/apyxl)
 
-The `apyxl` package (Another PYthon package for eXplainable Learning) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs. With `apyxl`, processing categorical features, fitting the model using Bayesian hyperparameter search, and instantiating the associated SHAP explainer can all be accomplished in a single line of code, streamlining the entire process from data preparation to model explanation.
+The `apyxl` package (**A**nother **PY**thon package for e**X**plainable **L**earning) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs. With `apyxl`, processing categorical features, fitting the model using Bayesian hyperparameter search, and instantiating the associated SHAP explainer can all be accomplished in a single line of code, streamlining the entire process from data preparation to model explanation.
 
 ## Current Features
 
