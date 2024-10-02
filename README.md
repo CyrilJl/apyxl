@@ -17,7 +17,7 @@ The `apyxl` package (**A**nother **PY**thon package for e**X**plainable **L**ear
 - A/B test analysis capabilities
 - Formalizing the links between the two latest concepts, and comparison with econometrics techniques, like [difference-in-differences](https://en.wikipedia.org/wiki/Difference_in_differences), [panel analysis](https://en.wikipedia.org/wiki/Panel_analysis) and [regression discontinuity](https://en.wikipedia.org/wiki/Regression_discontinuity_design). I believe these methods are closely related, and perhaps variations of a more general approach
 
-<span style="color:red">NEW</span>: I have written a [numerical experiment](https://github.com/CyrilJl/apyxl/blob/main/notebooks/Reconsidering%20P-values%20in%20Econometrics.ipynb) showing the confidence put in the p-values econometrics is fond of can be misplaced ; flawed or biased experimental designs can still lead to very low p-values and wrong conclusions on causalities.
+<span style="color:red">NEW</span>: I have conducted a [numerical experiment](https://github.com/CyrilJl/apyxl/blob/main/notebooks/Reconsidering%20P-values%20in%20Econometrics.ipynb) demonstrating that the confidence often placed in p-values in econometrics can be misguided. Flawed or biased experimental designs may still result in very low p-values, leading to incorrect conclusions about causality.
 
 <span style="color:red">NEW</span>: I have started comparing ``apyxl`` with the discussed econometrics methods, beginning with Regression Discontinuity Design, have a look on this [notebook](https://github.com/CyrilJl/apyxl/blob/main/notebooks/Regression%20Discontinuity.ipynb).
 
