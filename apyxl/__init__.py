@@ -2,7 +2,7 @@
 
 # author : Cyril Joly
 
-from ._misc import MissingInputError, NotFittedError
+from ._time_series_normalizer import TimeSeriesNormalizer
 from ._xgb import XGBClassifierWrapper, XGBRegressorWrapper
 
-__all__ = ['XGBClassifierWrapper', 'XGBRegressorWrapper', 'MissingInputError', 'NotFittedError']
+__all__ = ['TimeSeriesNormalizer', 'XGBClassifierWrapper', 'XGBRegressorWrapper']

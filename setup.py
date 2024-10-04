@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='apyxl',
-    version='0.1.3',
+    version='0.1.4',
     author='Cyril Joly',
     description='A Python package for data analysis and model optimization.',
     url='https://github.com/CyrilJl/apyxl',

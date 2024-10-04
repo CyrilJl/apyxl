@@ -6,14 +6,15 @@ The `apyxl` package (**A**nother **PY**thon package for e**X**plainable **L**ear
 
 ## Current Features
 
+- Easy wrappers for regression and classification: ``apyxl.XGBClassifierWrapper`` and ``apyxl.XGBClassifierWrapper``
 - Automatic One-Hot-Encoding for categorical variables
 - Bayesian hyperparameter optimization using `hyperopt`
 - Simple explainability visualizations using `shap` (`beeswarm`, `decision`, `force`, `scatter`)
 - Focus on classification and regression tasks
+- ``apyxl.TimeSeriesNormalizer``, a class designed to normalize a time series using other time series and compute a normalized time trend. This normalized trend is a time series that captures all the behavior of the analyzed time series that cannot be explained by the other series. While the original concept was developed for Weather Normalization, it can be extended to various non-weather-related features
 
- ## Planned Enhancements
+## Planned Enhancements
 
-- Time-series normalization
 - A/B test analysis capabilities
 - Formalizing the links between the two latest concepts, and comparison with econometrics techniques, like [difference-in-differences](https://en.wikipedia.org/wiki/Difference_in_differences), [panel analysis](https://en.wikipedia.org/wiki/Panel_analysis) and [regression discontinuity](https://en.wikipedia.org/wiki/Regression_discontinuity_design). I believe these methods are closely related, and perhaps variations of a more general approach
 
@@ -154,6 +155,15 @@ plt.show()
 ```
 
 <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/h.png" width="500">
+
+All the previous can be condensed using ``apyxl.TimeSeriesNormalizer``:
+
+```python
+from apyxl import TimeSeriesNormalizer
+
+tsn = TimeSeriesNormalizer(freq_trend='1d')
+trend = tsn.normalize(X=df, target='b')
+```
 
 #### 3.2. A/B tests
 Let's now look at our dataset in a different way:
