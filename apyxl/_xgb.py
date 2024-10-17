@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# author : Cyril Joly
+# author: Cyril Joly
 
 from hyperopt import hp
 from xgboost import XGBClassifier, XGBRegressor
@@ -9,7 +9,7 @@ from ._wrapper import Wrapper
 
 
 class XGBWrapper(Wrapper):
-    def __init__(self, scoring, greater_is_better, params_space, max_evals, cv, feature_perturbation, device, verbose, random_state):
+    def __init__(self, model_type, scoring, greater_is_better, params_space, max_evals, cv, feature_perturbation, device, verbose, random_state):
         super().__init__(scoring=scoring, greater_is_better=greater_is_better, max_evals=max_evals, cv=cv,
                          feature_perturbation=feature_perturbation, device=device, verbose=verbose, random_state=random_state)
         if params_space is None:
@@ -25,44 +25,34 @@ class XGBWrapper(Wrapper):
                 'reg_lambda': hp.uniform('reg_lambda', 1, 500)
             }
         self.params_space = params_space
+        self.model_type = model_type
 
     def _get_model(self):
-        raise NotImplementedError("Subclasses must implement _get_model() method.")
+        if self.model_type == 'regressor':
+            return XGBRegressor(device=self.device)
+        elif self.model_type == 'classifier':
+            return XGBClassifier(device=self.device)
+        else:
+            raise ValueError(f"Unknown model type: {self.model_type}")
+
+    def __repr__(self):
+        attrs = [f"scoring='{self.scoring}'",
+                 f"greater_is_better={self.greater_is_better}",
+                 f"max_evals={self.max_evals}",
+                 f"cv={self.cv}",
+                 f"feature_perturbation='{self.feature_perturbation}'"]
+        if self.verbose:
+            attrs.append("verbose=True")
+        return f"{self.__class__.__name__}({', '.join(attrs)})"
 
 
 class XGBRegressorWrapper(XGBWrapper):
     def __init__(self, scoring='r2', greater_is_better=True, params_space=None, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', device='cpu', verbose=False, random_state=None):
-        super().__init__(scoring=scoring, greater_is_better=greater_is_better, params_space=params_space,
+        super().__init__(model_type='regressor', scoring=scoring, greater_is_better=greater_is_better, params_space=params_space,
                          max_evals=max_evals, cv=cv, feature_perturbation=feature_perturbation, device=device, verbose=verbose, random_state=random_state)
-
-    def _get_model(self):
-        return XGBRegressor(device=self.device)
-
-    def __repr__(self):
-        attrs = [f"scoring='{self.scoring}'",
-                 f"greater_is_better={self.greater_is_better}",
-                 f"max_evals={self.max_evals}",
-                 f"cv={self.cv}",
-                 f"feature_perturbation='{self.feature_perturbation}'"]
-        if self.verbose:
-            attrs.append("verbose=True")
-        return f"XGBRegressorWrapper({', '.join(attrs)})"
 
 
 class XGBClassifierWrapper(XGBWrapper):
     def __init__(self, scoring='matthews', greater_is_better=True, params_space=None, max_evals=15, cv=5, feature_perturbation='tree_path_dependent', device='cpu', verbose=False, random_state=None):
-        super().__init__(scoring=scoring, greater_is_better=greater_is_better, params_space=params_space,
+        super().__init__(model_type='classifier', scoring=scoring, greater_is_better=greater_is_better, params_space=params_space,
                          max_evals=max_evals, cv=cv, feature_perturbation=feature_perturbation, device=device, verbose=verbose, random_state=random_state)
-
-    def _get_model(self):
-        return XGBClassifier(device=self.device)
-
-    def __repr__(self):
-        attrs = [f"scoring='{self.scoring}'",
-                 f"greater_is_better={self.greater_is_better}",
-                 f"max_evals={self.max_evals}",
-                 f"cv={self.cv}",
-                 f"feature_perturbation='{self.feature_perturbation}'"]
-        if self.verbose:
-            attrs.append("verbose=True")
-        return f"XGBClassifierWrapper({', '.join(attrs)})"
