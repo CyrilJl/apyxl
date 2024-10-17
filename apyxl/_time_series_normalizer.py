@@ -41,7 +41,8 @@ class TimeSeriesNormalizer:
             AssertionError: If neither `y` nor `target` is provided.
             ValueError: If the target column in X contains NaN values.
         """
-        assert (y is not None) or (target is not None), "'y' or 'target' must be provided."
+        if (y is None) and (target is None):
+            raise ValueError("'y' or 'target' must be provided. Both cannot be None.")
 
         if y is None:
             if target not in X.columns:
