@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest setuptools
+        pip install pytest setuptools numpy==2.0.2
 
     - name: Install apyxl
       run: |
