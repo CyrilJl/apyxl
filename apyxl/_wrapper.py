@@ -174,10 +174,12 @@ class Wrapper:
         check_params(y, types=(pd.Series, type(None)))
         check_params(target, types=(str, type(None)))
 
-        assert (y is not None) or (target is not None), "'y' or 'target' must be provided."
+        if (y is None) and (target is None):
+            raise ValueError("'y' or 'target' must be provided. Both cannot be None.")
 
         if y is None:
-            assert target in X.columns, f"Target '{target}' must be a column in X."
+            if target not in X.columns:
+                raise ValueError(f"Target '{target}' must be a column in X. Available columns are: {list(X.columns)}")
             X, y = X.drop(columns=target), X[target]
 
         self.target_name = y.name
