@@ -1,6 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/apyxl.svg)](https://badge.fury.io/py/apyxl)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/apyxl.svg)](https://anaconda.org/conda-forge/apyxl)
 [![Unit tests](https://github.com/CyrilJl/apyxl/actions/workflows/pytest.yml/badge.svg)](https://github.com/CyrilJl/apyxl/actions/workflows/pytest.yml)
+[![Documentation Status](https://readthedocs.org/projects/apyxl/badge/?version=latest)](https://apyxl.readthedocs.io/en/latest/?badge=latest)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a0f86a9906704070b66c8b87494e104f)](https://app.codacy.com/gh/CyrilJl/apyxl/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 # <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/logo.svg" alt="Logo apyxl" width="200" height="200" align="right"> apyxl
