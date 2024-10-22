@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from ._misc import check_params
-from ._xgb import XGBRegressorWrapper
+from ._xgb import XGBRegressorWrapper, XGBClassifierWrapper
 
 
 class TimeSeriesNormalizer:
@@ -10,11 +10,13 @@ class TimeSeriesNormalizer:
     TimeSeriesNormalizer normalizes a target time series based on external features using XGBoost regression.
 
     Attributes:
-        freq_trend (pd.tseries.offsets.DateOffset): Frequency for trend calculation.
+        freq_trend (pd.tseries.offsets.DateOffset): Frequency for trend calculation. This can be a coarser unit than
+        the original frequency of the dataset (e.g., using a weekly trend for daily data), which helps XGBoost avoid
+        overfitting to short-term fluctuations and better capture broader patterns.
         xgb (XGBRegressorWrapper): XGBoost regressor wrapper for normalization.
     """
 
-    def __init__(self, freq_trend: str, max_evals: int = 15):
+    def __init__(self, freq_trend: str, mode: str = 'regression', max_evals: int = 15):
         """
         Initializes the TimeSeriesNormalizer class.
 
@@ -22,7 +24,11 @@ class TimeSeriesNormalizer:
             freq_trend (str): Frequency string for resampling the time series trend.
             max_evals (int, optional): Maximum number of evaluations for the XGBoost model. Defaults to 15.
         """
-        self.xgb = XGBRegressorWrapper(max_evals=max_evals)
+        check_params(param=mode, params=('classification', 'regression'))
+        if param == 'classification':
+            self.xgb = XGBClassifierWrapper(max_evals=max_evals)
+        if param == 'regression':
+            self.xgb = XGBRegressorWrapper(max_evals=max_evals)
         self.freq_trend = pd.tseries.frequencies.to_offset(freq_trend)
 
     def preprocess_data(self, X: pd.DataFrame, y: pd.Series = None, target: str = None):
