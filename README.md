@@ -51,6 +51,7 @@ mamba install apyxl
 from apyxl import XGBRegressorWrapper
 from sklearn.datasets import fetch_california_housing
 
+X, y = fetch_california_housing(as_frame=True, return_X_y=True)
 X.shape, y.shape
 >>> ((20640, 8), (20640,))
 
