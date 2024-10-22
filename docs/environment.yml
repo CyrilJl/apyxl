@@ -1,0 +1,8 @@
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - docutils
+  - nbsphinx
+  - pydata-sphinx-theme
+  - sphinx-copybutton
