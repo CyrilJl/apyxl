@@ -6,7 +6,22 @@
 
 # <img src="https://raw.githubusercontent.com/CyrilJl/apyxl/main/_static/logo.svg" alt="Logo apyxl" width="200" height="200" align="right"> apyxl
 
-The `apyxl` package (**A**nother **PY**thon package for e**X**plainable **L**earning) is a simple wrapper around [`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/). It provides the user with the ability to build a performant regression or classification model and use the power of the SHAP analysis to gain a better understanding of the links the model builds between its inputs and outputs. With `apyxl`, processing categorical features, fitting the model using Bayesian hyperparameter search, and instantiating the associated SHAP explainer can all be accomplished in a single line of code, streamlining the entire process from data preparation to model explanation.
+The `apyxl` package (Another PYthon package for eXplainable Learning) is a simple wrapper around 
+[`xgboost`](https://xgboost.readthedocs.io/en/stable/python/index.html), [`hyperopt`](https://hyperopt.github.io/hyperopt/), and [`shap`](https://shap.readthedocs.io/en/latest/).
+It provides the user with the ability to build a performant regression or classification model 
+and use the power of the SHAP analysis to gain a better understanding of the links the model
+builds between its inputs and outputs. With `apyxl`, processing categorical features, fitting
+the model using Bayesian hyperparameter search, and instantiating the associated SHAP explainer
+can all be accomplished in a single line of code, streamlining the entire process from data
+preparation to model explanation.
+
+The core of this package lies in the classes `XGBClassifierWrapper` and `XGBRegressorWrapper`.
+However, `apyxl` is not limited to these, as they also feed into the `TimeSeriesNormalizer`
+class, which enables the calculation of complex time series trends in an unsupervised manner.
+
+More broadly, `apyxl` shapes my thinking on the connections between explainable machine learning,
+econometrics (Difference-In-Differences, Regression Discontinuity Design, Panel Analysis), time
+series normalization, and A/B testing.
 
 ## Current Features
 
@@ -14,7 +29,6 @@ The `apyxl` package (**A**nother **PY**thon package for e**X**plainable **L**ear
 - Automatic One-Hot-Encoding for categorical variables
 - Bayesian hyperparameter optimization using `hyperopt`
 - Simple explainability visualizations using `shap` (`beeswarm`, `decision`, `force`, `scatter`)
-- Focus on classification and regression tasks
 - ``apyxl.TimeSeriesNormalizer``, a class designed to normalize a time series using other time series and compute a normalized time trend. This normalized trend is a time series that captures all the behavior of the analyzed time series that cannot be explained by the other series. While the original concept was developed for Weather Normalization, it can be extended to various non-weather-related features
 
 ## Planned Enhancements
