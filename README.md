@@ -58,6 +58,10 @@ conda install -c conda-forge apyxl
 mamba install apyxl
 ```
 
+## Documentation
+
+Documentation can be found [here](https://apyxl.readthedocs.io/).
+
 ## Basic Usage
 
 ### 1. Regression
