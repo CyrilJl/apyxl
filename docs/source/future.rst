@@ -7,3 +7,4 @@ Planned Enhancements
 - Automatic smoothing of outputed trends of ``apyxl.TimeSeriesNormalizer`` ?
 - Numerical experiments will be conducted to compare the capabilities of ``apyxl`` with traditional econometric techniques
 - In addition, a ``apyxl.DiffInDiff`` class will be developed
+- Model saving
