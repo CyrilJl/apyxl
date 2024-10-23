@@ -13,10 +13,9 @@ setup(
     long_description=long_description,
     packages=find_packages(),
     install_requires=[
-        'numpy',
         'pandas',
         'xgboost>=2.0.0',
-        'scikit-learn',
+        'scikit-learn>=1.3',
         'shap',
         'hyperopt',
         'matplotlib'
