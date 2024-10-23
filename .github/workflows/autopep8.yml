@@ -28,16 +28,16 @@ jobs:
 
     - name: Run autopep8 on Python files
       run: |
-        autopep8 --in-place --aggressive --aggressive --max-line-length 100 **/*.py
+        autopep8 --in-place --aggressive --aggressive --max-line-length 120 **/*.py
 
     - name: Check for uncommitted changes
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
-        git status
-        if [ -n "$(git status --porcelain)" ]; then
-          git add .
+        git add .
+        if git diff-index --quiet HEAD --; then
+          echo "No formatting changes required."
+        else
           git commit -m "Auto-format Python code with autopep8"
           git push
-        else
-          echo "No formatting changes required."
+        fi
