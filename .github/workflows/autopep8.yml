@@ -34,7 +34,8 @@ jobs:
       run: |
         git config --global user.name "github-actions"
         git config --global user.email "github-actions@github.com"
-        if [[ `git status --porcelain` ]]; then
+        git status
+        if [ -n "$(git status --porcelain)" ]; then
           git add .
           git commit -m "Auto-format Python code with autopep8"
           git push
