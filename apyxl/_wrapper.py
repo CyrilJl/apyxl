@@ -115,7 +115,7 @@ class Wrapper:
 
         object_columns = X.select_dtypes(include='object').columns.tolist()
         if object_columns:
-            encoder = OneHotEncoder(sparse_output=False)
+            encoder = OneHotEncoder(sparse_output=False, feature_name_combiner=lambda a, b: f'{a}={b}')
             encoded_columns = pd.DataFrame(encoder.fit_transform(X[object_columns].values), index=X.index)
             encoded_columns.columns = encoder.get_feature_names_out(input_features=object_columns).ravel()
             X = pd.concat([X.drop(columns=object_columns), encoded_columns], axis=1)
