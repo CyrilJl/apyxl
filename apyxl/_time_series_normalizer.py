@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from ._misc import check_params
-from ._xgb import XGBRegressorWrapper, XGBClassifierWrapper
+from ._xgb import XGBRegressorWrapper
 
 
 class TimeSeriesNormalizer:
@@ -10,16 +10,14 @@ class TimeSeriesNormalizer:
     TimeSeriesNormalizer normalizes a target time series based on external features using XGBoost regression.
 
     Args:
-        freq_trend (pd.tseries.offsets.DateOffset): Frequency for trend calculation. This can be a coarser unit than the original frequency of the dataset (e.g., using a weekly trend for daily data), which helps XGBoost avoid overfitting to short-term fluctuations and better capture broader patterns.
-        max_evals (int, optional): Maximum number of evaluations for the XGBoost model. Defaults to 15.
+    freq_trend (str): Frequency string for resampling the time series trend.
+    max_evals (int, optional): Maximum number of evaluations for the XGBoost model. Defaults to 15.:
+        freq_trend (pd.tseries.offsets.DateOffset): Frequency for trend calculation.
+        xgb (XGBRegressorWrapper): XGBoost regressor wrapper for normalization.
     """
 
-    def __init__(self, freq_trend: str, mode: str = 'regression', max_evals: int = 15):
-        check_params(param=mode, params=('classification', 'regression'))
-        if mode == 'classification':
-            self.xgb = XGBClassifierWrapper(max_evals=max_evals)
-        if mode == 'regression':
-            self.xgb = XGBRegressorWrapper(max_evals=max_evals)
+    def __init__(self, freq_trend: str, max_evals: int = 15):
+        self.xgb = XGBRegressorWrapper(max_evals=max_evals)
         self.freq_trend = pd.tseries.frequencies.to_offset(freq_trend)
 
     def preprocess_data(self, X: pd.DataFrame, y: pd.Series = None, target: str = None):
@@ -38,8 +36,7 @@ class TimeSeriesNormalizer:
             AssertionError: If neither `y` nor `target` is provided.
             ValueError: If the target column in X contains NaN values.
         """
-        if (y is None) and (target is None):
-            raise ValueError("'y' or 'target' must be provided. Both cannot be None.")
+        assert (y is not None) or (target is not None), "'y' or 'target' must be provided."
 
         if y is None:
             if target not in X.columns:
@@ -94,7 +91,7 @@ class TimeSeriesNormalizer:
             raise ValueError("Shift must be either 'auto', 'mean', None, or a numeric value.")
         return trend + s
 
-    def normalize(self, X: pd.DataFrame, y: pd.Series = None, target: str = None, shift: float = None) -> pd.Series:
+    def normalize(self, X: pd.DataFrame, y: pd.Series = None, target: str = None, shift: float = None, return_shap_values=False) -> pd.Series:
         """
         Normalizes the target time series using external features.
 
@@ -103,6 +100,7 @@ class TimeSeriesNormalizer:
             y (pd.Series, optional): Target time series. If None, the target column in X will be used.
             target (str, optional): Name of the target column in X. Required if y is None.
             shift (float or str, optional): Value to shift the trend by. Can be a float/int or 'mean'. Defaults to None.
+            return_shap_values (bool): If True, return the SHAP values of the fitted model in addition of the computed trend.
 
         Returns:
             pd.Series: Normalized time series.
@@ -113,4 +111,7 @@ class TimeSeriesNormalizer:
         shap_values = self.xgb.compute_shap_values(Xp)
         trend = pd.Series(shap_values[:, 'time_numeric'].values, index=Xp.index, name=f'normalized {yp.name}')
         trend_shifted = self.apply_shift(trend=trend, y=yp, shift=shift)
-        return trend_shifted
+        if return_shap_values:
+            return trend_shifted, shap_values
+        else:
+            return trend_shifted
